@@ -3,9 +3,9 @@ import json
 from django.http  import JsonResponse
 from django.views import View
 
-from users.models         import User
-from reviews.models       import Review
-from users.decorators     import login_decorator
+from users.models     import User
+from reviews.models   import Review, Like
+from users.decorators import login_decorator
 
 class ReviewView(View):
     @login_decorator
@@ -99,3 +99,31 @@ class ReviewView(View):
             return JsonResponse({'message':'SUCCESS'}, status=200)
         except Review.DoesNotExist:
             return JsonResponse({'message':'NOT_EXIST_REVIEW'}, status=404)
+
+class LikeView(View):
+    @login_decorator
+    def get(self, request, review_id):
+        user         = request.user
+        num_of_likes = Like.objects.filter(review_id=review_id).count()
+        user_liked   = Like.objects.filter(review_id=review_id, user_id=user.id).exists()
+
+        results = {
+            'review_id'  : review_id,
+            'likes'      : num_of_likes,
+            'user_liked' : user_liked
+        }
+
+        return JsonResponse(results, status=200)
+
+    @login_decorator
+    def post(self, request, review_id):
+        like, is_created = Like.objects.get_or_create(
+            user_id   = request.user.id,
+            review_id = review_id
+        )
+        
+        if not is_created:
+            like.delete()
+            return JsonResponse({'message': 'DELETE'}, status=200)
+        
+        return JsonResponse({'message': 'SUCCESS'}, status=201)
