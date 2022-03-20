@@ -1,4 +1,5 @@
-import requests, json, jwt, uuid
+from wsgiref import headers
+import requests, json, jwt
 
 from requests.exceptions import Timeout
 
@@ -9,29 +10,41 @@ from .models             import User, Gender
 from .decorators         import login_decorator
 from my_settings         import SECRET_KEY, ALGORITHM
 
+class KakaoSignin():
+    def __init__(self):
+        self.BASE_URL  = 'https://kapi.kakao.com'
+        self.USER_PATH = '/v2/user/me'
+
+    def user_information(self, kakao_access_token):
+        user_information = requests.get(
+                    self.BASE_URL + self.USER_PATH,
+                    headers = {
+                        'Authorization' : f'Bearer {kakao_access_token}'
+                    },
+                    timeout = 5
+                ).json()
+
+        kakao_id  = user_information['id']
+        nickname  = user_information['properties']['nickname']
+        gender_id = Gender.objects.get(sex = user_information['kakao_account']['gender']).id
+
+        return kakao_id, nickname, gender_id
+
 class SignInView(View):
     def get(self,request):
         try:
             kakao_access_token   = request.headers.get('Authorization',None)
-            USER_INFORMATION_API = 'https://kapi.kakao.com/v2/user/me'
-            user_information     = requests.get(
-                USER_INFORMATION_API,
-                headers = {
-                    'Authorization' : f'Bearer {kakao_access_token}'
-                }, 
-                timeout = 5
-            ).json()
+            kakao_signin    = KakaoSignin()
+            kakao_id, nickname, gender_id = kakao_signin.user_information(kakao_access_token)
 
-            kakao_id             = user_information['id']
-            POINT                = 500000
-            gender_id            = Gender.objects.get(sex = user_information['kakao_account']['gender']).id
+            POINT     = 500000
             
             user, is_created = User.objects.get_or_create(
                 kakao_id  = kakao_id,
                 gender_id = gender_id,
                 defaults  = {
-                    'point'         : POINT,
-                    'date_of_birth' : '1945-08-15'
+                    'point'    : POINT,
+                    'nickname' : nickname
                 }
             )
 

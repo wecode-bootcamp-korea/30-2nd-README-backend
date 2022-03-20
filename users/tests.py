@@ -19,7 +19,7 @@ class SignInTest(TestCase):
         )
         User.objects.create(
             id            = 1,
-            nickname      = '',
+            nickname      = 'gwang',
             date_of_birth = '1945-08-15',
             kakao_id      = 12345,
             point         = 500000,
@@ -40,6 +40,9 @@ class SignInTest(TestCase):
                     'id'           : 12345,
                     'kakao_account': { 
                         'gender' : 'male',
+                    },
+                    'properties' : {
+                        'nickname' : 'gwang'
                     }
                 }        
         mocked_requests.get = MagicMock(return_value = MockedResponse())
@@ -62,6 +65,9 @@ class SignInTest(TestCase):
                     'id':12343,
                     'kakao_account': { 
                         'gender' : 'male',
+                    },
+                    'properties' : {
+                        'nickname' : 'pang'
                     }
                 }        
         mocked_requests.get = MagicMock(return_value = MockedResponse())
