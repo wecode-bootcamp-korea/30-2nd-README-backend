@@ -11,3 +11,11 @@ class Order(TimeStampModel):
     class Meta:
         db_table = 'orders'
         
+
+class OrderSeries(models.Model):
+    order_id  = models.ForeignKey('Order', on_delete=models.CASCADE)
+    series_id = models.ForeignKey('products.Series', on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'order_series`'
+        
