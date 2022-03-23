@@ -1,5 +1,5 @@
 from django.test     import TestCase, Client
-from products.models import Product, Author, Image, Publisher, Translator, Category
+from products.models import Product, Author, Image, Publisher, Translator, Category, Series
 from reviews.models  import Review
 from users.models    import User, Gender
 
@@ -1188,5 +1188,352 @@ class ProductReadmePickViewTest(TestCase):
         client = Client()
         response = client.get('/products/readmepick')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()['result']), 9)
+        self.assertEqual(len(response.json()['result']), 6)
     
+
+class ProductDetailViewTest(TestCase):
+    def setUp(self):
+
+        Author.objects.create(
+            id   = 1,
+            name = '노란책 작가'
+        )
+
+        Publisher.objects.create(
+            id   = 1,
+            name = '노란책 출판사'
+        )
+
+        Translator.objects.create(
+            id   = 1,
+            name = '노란책 번역가'
+        )
+
+        Category.objects.create(
+            id = 1,
+            name = '로맨스'
+        )
+
+        Product.objects.create(
+            id              = 1,
+            name            = '노란책',
+            description     = '노란책 내용',
+            publisher_id    = 1,
+            translator_id   = 1,
+            author_id       = 1,
+            category_id     = 1
+        )
+
+        Gender.objects.create(
+            id  = 1,
+            sex = 'male'
+        )
+
+        User.objects.create(
+            id            = 1,
+            nickname      = '노란책 닉네임',
+            date_of_birth = '1989-07-06',
+            gender_id     = 1,
+            kakao_id      = '노란책 카카오 아이디',
+            point         = 100000
+        )
+
+        Image.objects.create(
+            id         = 1,
+            image_url  = '노란책 이미지 유알엘',
+            product_id = 1
+        )
+
+        Review.objects.create(
+            id         = 1,
+            content    = '노란책 리뷰',
+            rating     = 5,
+            product_id = 1,
+            user_id    = 1
+        )
+
+        Series.objects.create(
+            id = 1,
+            name = '노란책 1',
+            price = 1000,
+            sequence = 1,
+            published_at = '2020-01-01',
+            product_id = 1
+        )
+
+    def tearDown(self):
+        Author.objects.all().delete()
+        Publisher.objects.all().delete()
+        Translator.objects.all().delete()
+        Category.objects.all().delete()
+        Product.objects.all().delete()
+        Gender.objects.all().delete()
+        User.objects.all().delete()
+        Image.objects.all().delete()
+        Review.objects.all().delete()
+        Series.objects.all().delete()
+
+    def test_success_product_detail_view_get_handler_method(self):
+        client   = Client()
+        response = client.get('/products/details/1')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(),
+            {
+                "result": {
+                    "book_name"   : '노란책',
+                    "author"      : '노란책 작가',
+                    "publisher"   : '노란책 출판사',
+                    "book_img"    : '노란책 이미지 유알엘',
+                    "total_price" : '1000.00'
+                }        
+            }
+        )
+
+    def test_fail_product_detail_view_get_handler_method(self):
+        client   = Client()
+        response = client.get('/products/details/28')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), 
+            {
+                "message":"product does not exist"
+            }
+        )
+
+
+class SeriesListViewTest(TestCase):
+    def setUp(self):
+
+        Author.objects.create(
+            id   = 1,
+            name = '노란책 작가'
+        )
+
+        Publisher.objects.create(
+            id   = 1,
+            name = '노란책 출판사'
+        )
+
+        Translator.objects.create(
+            id   = 1,
+            name = '노란책 번역가'
+        )
+
+        Category.objects.create(
+            id = 1,
+            name = '로맨스'
+        )
+
+        Product.objects.create(
+            id              = 1,
+            name            = '노란책',
+            description     = '노란책 내용',
+            publisher_id    = 1,
+            translator_id   = 1,
+            author_id       = 1,
+            category_id     = 1
+        )
+
+        Gender.objects.create(
+            id  = 1,
+            sex = 'male'
+        )
+
+        User.objects.create(
+            id            = 1,
+            nickname      = '노란책 닉네임',
+            date_of_birth = '1989-07-06',
+            gender_id     = 1,
+            kakao_id      = '노란책 카카오 아이디',
+            point         = 100000
+        )
+
+        Image.objects.create(
+            id         = 1,
+            image_url  = '노란책 이미지 유알엘',
+            product_id = 1
+        )
+
+        Review.objects.create(
+            id         = 1,
+            content    = '노란책 리뷰',
+            rating     = 5,
+            product_id = 1,
+            user_id    = 1
+        )
+
+        Series.objects.bulk_create([
+            Series(
+                id           = 1,
+                name         = '노란책 1',
+                price        = 1000,
+                sequence     = 1,
+                published_at = '2020-01-01',
+                product_id   = 1
+            ),
+            Series(
+                id           = 2,
+                name         = '노란책 2',
+                price        = 1000,
+                sequence     = 2,
+                published_at = '2020-01-02',
+                product_id   = 1
+            ),
+            Series(
+                id           = 3,
+                name         = '노란책 3',
+                price        = 1000,
+                sequence     = 3,
+                published_at = '2020-01-03',
+                product_id   = 1
+            ),
+            Series(
+                id           = 4,
+                name         = '노란책 4',
+                price        = 1000,
+                sequence     = 4,
+                published_at = '2020-01-04',
+                product_id   = 1
+            ),
+            Series(
+                id           = 5,
+                name         = '노란책 5',
+                price        = 1000,
+                sequence     = 5,
+                published_at = '2020-01-05',
+                product_id   = 1
+            ),
+            Series(
+                id           = 6,
+                name         = '노란책 6',
+                price        = 1000,
+                sequence     = 6,
+                published_at = '2020-01-06',
+                product_id   = 1
+            ),
+            Series(
+                id           = 7,
+                name         = '노란책 7',
+                price        = 1000,
+                sequence     = 7,
+                published_at = '2020-01-07',
+                product_id   = 1
+            ),
+            Series(
+                id           = 8,
+                name         = '노란책 8',
+                price        = 1000,
+                sequence     = 8,
+                published_at = '2020-01-08',
+                product_id   = 1
+            ),
+            Series(
+                id           = 9,
+                name         = '노란책 9',
+                price        = 1000,
+                sequence     = 9,
+                published_at = '2020-01-09',
+                product_id   = 1
+            ),
+            Series(
+                id           = 10,
+                name         = '노란책 10',
+                price        = 1000,
+                sequence     = 10,
+                published_at = '2020-01-10',
+                product_id   = 1
+            )
+        ])
+
+    def tearDown(self):
+        Author.objects.all().delete()
+        Publisher.objects.all().delete()
+        Translator.objects.all().delete()
+        Category.objects.all().delete()
+        Product.objects.all().delete()
+        Gender.objects.all().delete()
+        User.objects.all().delete()
+        Image.objects.all().delete()
+        Review.objects.all().delete()
+        Series.objects.all().delete()
+
+    def test_success_series_list_view_offset_limit_param_get_handler_method(self):
+        client   = Client()
+        response = client.get('/products/books/1?offset=0&limit=10')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(),
+            {
+                "result": [
+                    {
+                        "series_name"  : '노란책 1',
+                        "series_image" : ['노란책 이미지 유알엘'],
+                        "published_at" : '2020-01-01',
+                        "price"        : '1000.00',
+                        "series_id"    : 1
+                    },
+                    {
+                        "series_name"  : '노란책 2',
+                        "series_image" : ['노란책 이미지 유알엘'],
+                        "published_at" : '2020-01-02',
+                        "price"        : '1000.00',
+                        "series_id"    : 2
+                    },
+                    {
+                        "series_name"  : '노란책 3',
+                        "series_image" : ['노란책 이미지 유알엘'],
+                        "published_at" : '2020-01-03',
+                        "price"        : '1000.00',
+                        "series_id"    : 3
+                    },
+                    {
+                        "series_name"  : '노란책 4',
+                        "series_image" : ['노란책 이미지 유알엘'],
+                        "published_at" : '2020-01-04',
+                        "price"        : '1000.00',
+                        "series_id"    : 4
+                    },
+                    {
+                        "series_name"  : '노란책 5',
+                        "series_image" : ['노란책 이미지 유알엘'],
+                        "published_at" : '2020-01-05',
+                        "price"        : '1000.00',
+                        "series_id"    : 5
+                    },
+                    {
+                        "series_name"  : '노란책 6',
+                        "series_image" : ['노란책 이미지 유알엘'],
+                        "published_at" : '2020-01-06',
+                        "price"        : '1000.00',
+                        "series_id"    : 6
+                    },
+                    {
+                        "series_name"  : '노란책 7',
+                        "series_image" : ['노란책 이미지 유알엘'],
+                        "published_at" : '2020-01-07',
+                        "price"        : '1000.00',
+                        "series_id"    : 7
+                    },
+                    {
+                        "series_name"  : '노란책 8',
+                        "series_image" : ['노란책 이미지 유알엘'],
+                        "published_at" : '2020-01-08',
+                        "price"        : '1000.00',
+                        "series_id"    : 8
+                    },
+                    {
+                        "series_name"  : '노란책 9',
+                        "series_image" : ['노란책 이미지 유알엘'],
+                        "published_at" : '2020-01-09',
+                        "price"        : '1000.00',
+                        "series_id"    : 9
+                    },
+                    {
+                        "series_name"  : '노란책 10',
+                        "series_image" : ['노란책 이미지 유알엘'],
+                        "published_at" : '2020-01-10',
+                        "price"        : '1000.00',
+                        "series_id"    : 10
+                    }
+                ]    
+            }
+        )           
+
