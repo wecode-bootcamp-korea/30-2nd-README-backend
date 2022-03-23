@@ -99,5 +99,9 @@ class CartView(View):
                     series_id = series
                     ) for series in series_ids if Series.objects.filter(id = series, product_id = product_id)]
         
+<<<<<<< HEAD
         return cart, cart_series
         
+=======
+        return cart, cart_series
+>>>>>>> 2a4beea (Fix)
