@@ -3,6 +3,7 @@
 
 # Target site
 <img src="https://user-images.githubusercontent.com/61664975/160078489-9e1098bf-4eb2-4273-9a62-8cd5ade3def6.png">
+
 * ## 사이트 소개  
     [Site Link](https://ridibooks.com/ebook/only)
     
@@ -19,6 +20,7 @@
 
 ## User flow
 <img src="https://user-images.githubusercontent.com/61664975/160074738-4ed5742e-0770-4c8d-970b-2d79a6522573.png">
+
 ## 초기기획 및 구현 목표
 * 짧은 기간동안 기능구현에 집중해야하므로 사이트의 디자인과 기획만 클론
 * 개발은 초기세팅부터 전부 직접 구현
