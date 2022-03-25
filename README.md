@@ -5,7 +5,6 @@
 
 ---
 # Target site
-<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fb0HNcx%2FbtrvKJPkmQP%2FgPYcHkiXc5NtsM5VbeqiaK%2Fimg.png">
 
 * ## 사이트 소개  
     [Site Link](https://ridibooks.com/ebook/only)
